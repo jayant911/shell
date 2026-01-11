@@ -1,0 +1,8 @@
+[package]
+name = "shit-shell"
+version = "0.1.0"
+authors = ["Jayanta Pradhan"]
+edition = "2024"
+rust-version = "1.92.0"
+
+[dependencies]
