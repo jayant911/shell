@@ -1,4 +1,5 @@
 use pathsearch::find_executable_in_path;
+use std::env;
 
 use super::BUILT_IN_COMMANDS;
 use super::builtin::Builtin;
@@ -52,6 +53,18 @@ impl Builtin for TypeComand {
             } else {
                 println!("{}: not found", arg);
             }
+        }
+    }
+}
+
+pub struct PwdComand;
+
+impl Builtin for PwdComand {
+    fn execute(&self) {
+        let pwd = env::current_dir();
+        match pwd {
+            Ok(directory_path) => println!("{}", directory_path.display()),
+            Err(e) => eprintln!("error geting current directory: {}", e),
         }
     }
 }

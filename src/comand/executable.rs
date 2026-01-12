@@ -12,8 +12,8 @@ impl Executable {
     pub fn execute(&self) {
         let args = self.args.iter().map(|s| s.as_str()).collect::<Vec<&str>>();
         match find_executable_in_path(&self.name) {
-            Some(path) => {
-                let mut child = process::Command::new(path)
+            Some(_) => {
+                let mut child = process::Command::new(&self.name)
                     .args(args)
                     .stdin(Stdio::inherit())
                     .stdout(Stdio::inherit())

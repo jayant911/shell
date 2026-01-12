@@ -6,6 +6,7 @@ use builtin::Builtin;
 
 use builtins::EchoComand;
 use builtins::ExitComand;
+use builtins::PwdComand;
 use builtins::TypeComand;
 use executable::Executable;
 
@@ -16,6 +17,7 @@ pub enum Command {
     ExitCmd(ExitComand),
     EchoCmd(EchoComand),
     TypeCmd(TypeComand),
+    PWDCmd(PwdComand),
     OtherCmd(Executable),
     CmdNotFound,
 }
@@ -41,6 +43,7 @@ impl Command {
                 text: args.join(" "),
             }),
             "type" => Command::TypeCmd(TypeComand { args }),
+            "pwd" => Command::PWDCmd(PwdComand),
             other => Command::OtherCmd(Executable {
                 name: other.to_string(),
                 args,
@@ -54,6 +57,7 @@ impl Command {
             Command::ExitCmd(cmd) => cmd.execute(),
             Command::EchoCmd(cmd) => cmd.execute(),
             Command::TypeCmd(cmd) => cmd.execute(),
+            Command::PWDCmd(cmd) => cmd.execute(),
             Command::OtherCmd(cmd) => cmd.execute(),
             //This line never going to call because it for handling empty user input
             Command::CmdNotFound => println!("command not found"),
