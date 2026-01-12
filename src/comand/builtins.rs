@@ -1,3 +1,5 @@
+use pathsearch::find_executable_in_path;
+
 use super::BUILT_IN_COMMANDS;
 use super::builtin::Builtin;
 
@@ -41,7 +43,11 @@ impl Builtin for TypeComand {
     fn execute(&self) {
         for arg in self.args.iter() {
             if BUILT_IN_COMMANDS.contains(&arg.as_str()) {
+                // 1. Check built_in_command list.
                 println!("{} is a shell builtin", arg);
+            } else if let Some(path) = find_executable_in_path(arg) {
+                // 2. Check PATH.
+                println!("{} is {}", arg, path.display());
             } else {
                 println!("{}: not found", arg);
             }
