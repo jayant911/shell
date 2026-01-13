@@ -4,6 +4,7 @@ pub mod executable;
 
 use builtin::Builtin;
 
+use builtins::ChangeDirCommand;
 use builtins::EchoComand;
 use builtins::ExitComand;
 use builtins::PwdComand;
@@ -18,6 +19,7 @@ pub enum Command {
     EchoCmd(EchoComand),
     TypeCmd(TypeComand),
     PWDCmd(PwdComand),
+    CDcmd(ChangeDirCommand),
     OtherCmd(Executable),
     CmdNotFound,
 }
@@ -44,6 +46,7 @@ impl Command {
             }),
             "type" => Command::TypeCmd(TypeComand { args }),
             "pwd" => Command::PWDCmd(PwdComand),
+            "cd" => Command::CDcmd(ChangeDirCommand { args }),
             other => Command::OtherCmd(Executable {
                 name: other.to_string(),
                 args,
@@ -58,6 +61,7 @@ impl Command {
             Command::EchoCmd(cmd) => cmd.execute(),
             Command::TypeCmd(cmd) => cmd.execute(),
             Command::PWDCmd(cmd) => cmd.execute(),
+            Command::CDcmd(cmd) => cmd.execute(),
             Command::OtherCmd(cmd) => cmd.execute(),
             //This line never going to call because it for handling empty user input
             Command::CmdNotFound => println!("command not found"),

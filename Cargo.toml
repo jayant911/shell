@@ -6,4 +6,5 @@ edition = "2024"
 rust-version = "1.92.0"
 
 [dependencies]
+home = "0.5.12"
 pathsearch = "0.2.0"
