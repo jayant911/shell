@@ -55,26 +55,56 @@ impl Command {
     }
 
     fn input_process(input: &str) -> Vec<String> {
-        let input = input.chars();
+        let mut chars = input.chars().peekable();
         let mut previus_single_quot = false;
         let mut previus_dauble_quot = false;
-        let mut token: Vec<char> = vec![];
-        let mut output: Vec<String> = vec![];
+        let mut escape_next = false;
 
-        for c in input {
+        let mut token: Vec<char> = Vec::new();
+        let mut output: Vec<String> = Vec::new();
+
+        while let Some(c) = chars.next() {
+            if escape_next {
+                token.push(c);
+                escape_next = false;
+                continue;
+            }
+
             match c {
+                '\\' => {
+                    if previus_single_quot {
+                        // Literal inside single quotes
+                        token.push('\\');
+                    } else if previus_dauble_quot {
+                        // Inside double quotes: escape only " and \
+                        match chars.peek() {
+                            Some('"') | Some('\\') => {
+                                token.push(chars.next().unwrap());
+                            }
+                            _ => {
+                                token.push('\\');
+                            }
+                        }
+                    } else {
+                        // Outside quotes: escape any character
+                        escape_next = true;
+                    }
+                }
                 ' ' => {
                     if previus_single_quot || previus_dauble_quot {
                         token.push(c);
-                    } else {
-                        let final_token = token.iter().collect::<String>();
-                        if !final_token.is_empty() {
-                            output.push(final_token);
-                            token.clear();
-                        }
+                    } else if !token.is_empty() {
+                        output.push(token.iter().collect());
+                        token.clear();
                     }
                 }
-                '"' => previus_dauble_quot = !previus_dauble_quot,
+                '"' => {
+                    if previus_single_quot {
+                        token.push(c);
+                    } else {
+                        previus_dauble_quot = !previus_dauble_quot;
+                    }
+                }
                 '\'' => {
                     if previus_dauble_quot {
                         token.push(c);
@@ -88,8 +118,7 @@ impl Command {
             }
         }
         if !token.is_empty() {
-            let final_token = token.iter().collect::<String>();
-            output.push(final_token);
+            output.push(token.iter().collect());
         }
 
         output
